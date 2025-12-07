@@ -1,0 +1,5 @@
+project:
+  name: airflow-astro
+
+postgres:
+  port: 55432
