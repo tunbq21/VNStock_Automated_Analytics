@@ -3,8 +3,7 @@ from airflow.providers.standard.operators.python import PythonOperator
 from datetime import datetime
 import requests, json, csv, os, psycopg2, sys
 from shopee_etl_repo import ShopeeETL
-from dags.anonymous_path import Path_Folder
-
+from anonymous_path import Path_Folder
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 url = "https://tiki.vn/api/personalish/v1/blocks/listings?limit=10&sort=top_seller&page=1&urlKey=xe-may&category=8597"
