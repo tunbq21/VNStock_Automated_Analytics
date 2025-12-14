@@ -3,3 +3,9 @@
 apache-airflow-providers-google
 
 apache-airflow-providers-postgres
+
+vnstock==3.3.0 
+
+pandas==2.2.3
+
+pyarrow  
