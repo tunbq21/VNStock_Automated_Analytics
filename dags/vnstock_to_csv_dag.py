@@ -20,7 +20,7 @@ default_args = {
 
 
 # Danh sách cổ phiếu ví dụ
-TICKERS = ['FPT', 'HPG', 'VCB', 'GAS', 'VNM', 'MSN', 'MWG', 'VPB', 'TCB', 'ACB']
+TICKERS = ['FPT', 'HPG', 'VCB', 'GAS', 'VNM', 'MSN', 'MWG', 'VPB', 'TCB', 'ACB'] # List Types of stocks in VN30 
 
 # ĐƯỜNG DẪN TỐI ƯU CHO ASTRO/DOCKER (Ánh xạ đến thư mục 'data_lake' trên máy tính)
 BASE_DATA_PATH = '/usr/local/airflow/dags/data_lake/vnstock_prices_csv' 
