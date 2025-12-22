@@ -57,9 +57,6 @@ with DAG(
                 )
                 
                 if not df.empty:
-                    # =================================================================
-                    # 👉 PHẦN BỔ SUNG: CHUẨN HÓA DATAFRAME TỪ VNSTOCK
-                    # =================================================================
                     
                     # 1. Đảm bảo tên cột Ngày là 'Date' (vnstock mới thường trả về 'time' hoặc 'TradingDate')
                     if 'time' in df.columns:
