@@ -77,7 +77,7 @@ def analyze_stock_performance(**kwargs):
 
         summary_data.append({
             'ticker': ticker.upper(),
-            'year': 2025,
+            'year': int(year),
             'start_price': start_price,
             'end_price': end_price,
             'total_return': round(total_return, 4),
@@ -97,6 +97,30 @@ def analyze_stock_performance(**kwargs):
 
     print("=== YEARLY STOCK ANALYSIS  ===")
     print(result_df.sort_values("total_return", ascending=False))
+
+def recommend(row, median_volume):
+    if row['total_return'] < 0:
+        return 'SELL'
+
+    if (
+        row['total_return'] >= 0.2
+        and row['volatility'] <= 0.015
+        and row['avg_volume'] >= median_volume
+    ):
+        return 'STRONG BUY'
+
+    if row['total_return'] >= 0.2:
+        return 'BUY'
+
+    if 0.05 <= row['total_return'] < 0.2 and row['volatility'] <= 0.015:
+        return 'HOLD'
+
+    if row['total_return'] < 0.05 and row['volatility'] > 0.03:
+        return 'AVOID'
+
+    return 'HOLD'
+
+
 
 
 def load_yearly_analysis_to_postgres(**kwargs):
@@ -123,6 +147,7 @@ def load_yearly_analysis_to_postgres(**kwargs):
             total_return FLOAT,
             volatility FLOAT,
             avg_volume BIGINT,
+            recommendation TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (ticker, year)
         );
@@ -133,6 +158,14 @@ def load_yearly_analysis_to_postgres(**kwargs):
     input_file = "/usr/local/airflow/dags/data_lake/vnstock_analysis/yearly_stock_summary_2025.csv"
     df = pd.read_csv(input_file)
 
+    median_volume = df['avg_volume'].median()
+
+    df['recommendation'] = df.apply(
+        lambda r: recommend(r, median_volume),
+        axis=1
+    )
+
+
     records = [
         (
             r['ticker'],
@@ -141,14 +174,25 @@ def load_yearly_analysis_to_postgres(**kwargs):
             r['end_price'],
             r['total_return'],
             r['volatility'],
-            r['avg_volume']
+            r['avg_volume'],
+            r['recommendation']
         )
         for _, r in df.iterrows()
     ]
 
+
     insert_query = """
         INSERT INTO vnstock_yearly_analysis
-        (ticker, year, start_price, end_price, total_return, volatility, avg_volume)
+        (
+            ticker,
+            year,
+            start_price,
+            end_price,
+            total_return,
+            volatility,
+            avg_volume,
+            recommendation
+        )
         VALUES %s
         ON CONFLICT (ticker, year) DO UPDATE SET
             start_price = EXCLUDED.start_price,
@@ -156,7 +200,9 @@ def load_yearly_analysis_to_postgres(**kwargs):
             total_return = EXCLUDED.total_return,
             volatility = EXCLUDED.volatility,
             avg_volume = EXCLUDED.avg_volume,
+            recommendation = EXCLUDED.recommendation,
             created_at = CURRENT_TIMESTAMP;
+
     """
 
     execute_values.execute_values(
@@ -176,9 +222,9 @@ with DAG(
     'analyze_stock_performance_dag',
     default_args=default_args,
     description='DAG phân tích hiệu suất cổ phiếu VNStock hàng năm',
-    schedule='@yearly',  # Chạy vào ngày 1 tháng 1 hàng năm lúc 08:00 AM
+    schedule='@yearly',  
     catchup=False,
-    tags=['vnstock', 'analysis'],
+    tags=['vnstock', 'analysis','symbols'],
 ) as dag:
 
 
