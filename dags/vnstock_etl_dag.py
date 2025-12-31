@@ -52,7 +52,6 @@ def Extract_data_to_csv (**kwargs):
 # vnstock trả ngày ở cột 'time'
                 df.rename(columns={'time': 'Date'}, inplace=True)
 
-                # đảm bảo Date đúng kiểu
                 df['Date'] = pd.to_datetime(df['Date']).dt.date
 
                 df['Ticker'] = ticker
