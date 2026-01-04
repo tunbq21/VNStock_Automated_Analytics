@@ -12,7 +12,6 @@ products = pd.DataFrame({
 })
 
 
-
 # 2. Bảng Sales (Giao dịch - 50,000 dòng với các lỗi thực tế)
 n_sales = 50000
 sales = pd.DataFrame({

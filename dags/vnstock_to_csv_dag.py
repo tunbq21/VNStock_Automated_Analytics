@@ -10,7 +10,7 @@ import os
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime(2025, 12, 12),
+    'start_date': datetime(2026, 1, 1),
     'email': ['tbuiquang103@gmail.com'],
     'email_on_failure': True,
     'email_on_retry': False,
