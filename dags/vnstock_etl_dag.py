@@ -14,7 +14,7 @@ from airflow.operators.python import PythonOperator
 default_args = {
     'owner': 'Tuan Quang',
     'depends_on_past': False,
-    'start_date': datetime(2025, 12, 16),
+    'start_date': datetime(2026, 1, 1),
     'email': ['tuanquang@example.com'],
     'email_on_failure': True,
     'email_on_retry': False,

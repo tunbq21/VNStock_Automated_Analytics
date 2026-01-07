@@ -19,6 +19,7 @@ default_args = {
 }
 
 
+
 TICKERS = ['FPT', 'HPG', 'VCB', 'GAS', 'VNM', 'MSN', 'MWG', 'VPB', 'TCB', 'ACB'] 
 
 BASE_DATA_PATH = '/usr/local/airflow/dags/data_lake/vnstock_prices_csv' 
