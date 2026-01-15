@@ -138,6 +138,7 @@ def generate_full_10_tables():
         print(f"Đang xuất file: {name}.csv ({len(df)} dòng)...")
         df.to_csv(f"{name}.csv", index=False)
     
+    
     print("--- HOÀN THÀNH TẤT CẢ 10 BẢNG! ---")
 
 if __name__ == "__main__":
