@@ -27,7 +27,7 @@ To enable large-scale data processing, the pipeline integrates local Airflow wit
 
 The pipeline doesn't just move data; it generates actionable insights. Below is a snapshot of the processed stock analytics stored in PostgreSQL, showing calculated KPIs and investment signals:
 
-![Stock Analytics Output](https://github.com/tunbq21/airflow_astro_dev/blob/main/image_4c40fb.png?raw=true)
+![Stock Analytics Output]([https://github.com/tunbq21/airflow_astro_dev/blob/main/image_4c40fb.png?raw=true](https://github.com/tunbq21/airflow_astro_dev/blob/main/blob/main/image_4c40fb.png))
 
 > **Note**: The image above displays automated signals (BUY/SELL/HOLD) based on multi-factor financial analysis including Volatility and Total Return.
 
