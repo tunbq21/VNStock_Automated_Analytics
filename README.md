@@ -31,7 +31,7 @@ The pipeline is designed to handle daily/yearly batch processing with a hybrid c
 | **Cloud (GCP)** | GCS, Dataproc, IAM |
 | **Database** | PostgreSQL |
 | **Infrastructure** | Docker |
-| **Libraries** | Pandas, Vnstock API, Psycopg2 |
+| **Libraries** | Pandas, Vnstock API, Psycopg2, PySpark |
 
 ## 📂 Project Structure
 
