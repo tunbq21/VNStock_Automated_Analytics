@@ -93,4 +93,3 @@ The pipeline generates a `stock_recommendations` table in PostgreSQL with the fo
 
 Developed by **Bui Quang Tuan** -**tbuiquang103@gmail.com**
 
-```
