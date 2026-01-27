@@ -91,11 +91,6 @@ The pipeline generates a `stock_recommendations` table in PostgreSQL with the fo
 
 ---
 
-Developed by **Bui Quang Tuan** - *Data Engineer*
-
-2. **Setup:** Nếu project của bạn có thêm các bước cài đặt đặc thù (như config Service Account trên GCP), hãy bổ sung vào mục **Setup**.
-3. **Link trong CV:** Sau khi tạo file README này, cái "GitHub Link" trong CV của bạn sẽ trở nên cực kỳ giá trị vì nó giải thích chi tiết những gì bạn đã làm.
-
-Bạn có muốn mình tối ưu thêm đoạn nào trong nội dung này không?
+Developed by **Bui Quang Tuan** -**tbuiquang103@gmail.com**
 
 ```
