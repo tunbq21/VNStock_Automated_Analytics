@@ -90,6 +90,25 @@ The pipeline generates a `stock_recommendations` table in PostgreSQL with the fo
 * `signal`: Recommended action (Buy/Sell/Hold)
 
 ---
+## ⚙️ GCP Infrastructure Setup
+
+To run the Spark jobs on Google Cloud, follow these configuration steps:
+
+1. **GCS Buckets**: Create two buckets:
+   - `gs://your-landing-zone`: For raw data and processed Parquet files.
+   - `gs://your-spark-scripts`: To host the PySpark transformation logic.
+
+2. **Dataproc Configuration**: 
+   - The pipeline is pre-configured to use `n1-standard-2` machine types for cost-efficiency.
+   - Ensure the **Dataproc API** and **Compute Engine API** are enabled in your GCP Console.
+
+3. **Airflow Connection**:
+   - In Airflow UI, go to **Admin > Connections**.
+   - Create a new connection `google_cloud_default`.
+   - Upload your **Service Account JSON Key** with the following permissions:
+     - `Dataproc Editor`
+     - `Storage Object Admin`
+     - `Service Account User`
 
 Developed by **Bui Quang Tuan** -**tbuiquang103@gmail.com**
 
