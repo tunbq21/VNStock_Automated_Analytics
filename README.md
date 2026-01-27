@@ -1,45 +1,101 @@
-Overview
-========
+# VNStock Automated Analytics & Big Data Pipeline 📈
 
-Welcome to Astronomer! This project was generated after you ran 'astro dev init' using the Astronomer CLI. This readme describes the contents of the project, as well as how to run Apache Airflow on your local machine.
+An end-to-end Data Engineering project that automates the ingestion, processing, and analysis of Vietnamese stock market data (VN30) using the Modern Data Stack.
 
-Project Contents
-================
+## 🏗 System Architecture
 
-Your Astro project contains the following files and folders:
+The pipeline is designed to handle daily/yearly batch processing with a hybrid cloud-local approach:
 
-- dags: This folder contains the Python files for your Airflow DAGs. By default, this directory includes one example DAG:
-    - `example_astronauts`: This DAG shows a simple ETL pipeline example that queries the list of astronauts currently in space from the Open Notify API and prints a statement for each astronaut. The DAG uses the TaskFlow API to define tasks in Python, and dynamic task mapping to dynamically print a statement for each astronaut. For more on how this DAG works, see our [Getting started tutorial](https://www.astronomer.io/docs/learn/get-started-with-airflow).
-- Dockerfile: This file contains a versioned Astro Runtime Docker image that provides a differentiated Airflow experience. If you want to execute other commands or overrides at runtime, specify them here.
-- include: This folder contains any additional files that you want to include as part of your project. It is empty by default.
-- packages.txt: Install OS-level packages needed for your project by adding them to this file. It is empty by default.
-- requirements.txt: Install Python packages needed for your project by adding them to this file. It is empty by default.
-- plugins: Add custom or community plugins for your project to this file. It is empty by default.
-- airflow_settings.yaml: Use this local-only file to specify Airflow Connections, Variables, and Pools instead of entering them in the Airflow UI as you develop DAGs in this project.
 
-Deploy Your Project Locally
-===========================
 
-Start Airflow on your local machine by running 'astro dev start'.
+1.  **Orchestration**: Managed by **Apache Airflow** (running via **Astro CLI**).
+2.  **Data Ingestion**: Fetches stock data from **Vnstock API** for 29 tickers.
+3.  **Storage (Data Lake)**: Raw and processed data stored in **Google Cloud Storage (GCS)**.
+4.  **Compute (Big Data)**: Triggers distributed **PySpark** jobs on **Google Cloud Dataproc** for heavy transformations.
+5.  **Analytics Layer**: Aggregates financial KPIs (Volatility, Total Return) and stores them in **PostgreSQL**.
+6.  **Containerization**: Entire environment isolated using **Docker**.
 
-This command will spin up five Docker containers on your machine, each for a different Airflow component:
+## 🚀 Key Features
 
-- Postgres: Airflow's Metadata Database
-- Scheduler: The Airflow component responsible for monitoring and triggering tasks
-- DAG Processor: The Airflow component responsible for parsing DAGs
-- API Server: The Airflow component responsible for serving the Airflow UI and API
-- Triggerer: The Airflow component responsible for triggering deferred tasks
+- **Automated ETL**: Daily ingestion schedules with Airflow DAGs.
+- **Stock Recommendation Engine**: Built-in logic using Pandas/PySpark to calculate investment signals (Strong Buy, Hold, etc.).
+- **Data Idempotency**: Implemented `UPSERT` logic in PostgreSQL to prevent duplicate records during re-runs.
+- **Cloud Integration**: Uses IAM Service Accounts for secure local-to-cloud connectivity.
 
-When all five containers are ready the command will open the browser to the Airflow UI at http://localhost:8080/. You should also be able to access your Postgres Database at 'localhost:5432/postgres' with username 'postgres' and password 'postgres'.
+## 🛠 Tech Stack
 
-Note: If you already have either of the above ports allocated, you can either [stop your existing Docker containers or change the port](https://www.astronomer.io/docs/astro/cli/troubleshoot-locally#ports-are-not-available-for-my-local-airflow-webserver).
+| Category | Technology |
+| :--- | :--- |
+| **Orchestration** | Apache Airflow (Astro CLI) |
+| **Languages** | Python, PySpark, SQL |
+| **Cloud (GCP)** | GCS, Dataproc, IAM |
+| **Database** | PostgreSQL |
+| **Infrastructure** | Docker |
+| **Libraries** | Pandas, Vnstock API, Psycopg2 |
 
-Deploy Your Project to Astronomer
-=================================
+## 📂 Project Structure
 
-If you have an Astronomer account, pushing code to a Deployment on Astronomer is simple. For deploying instructions, refer to Astronomer documentation: https://www.astronomer.io/docs/astro/deploy-code/
+```text
+├── dags/                   # Airflow DAG definitions
+├── include/                # Helper scripts and SQL queries
+├── plugins/                # Custom Airflow operators/plugins
+├── scripts/                # PySpark transformation scripts
+├── docker-compose.yaml     # Container orchestration
+└── Dockerfile              # Custom Airflow image with dependencies
 
-Contact
-=======
+```
 
-The Astronomer CLI is maintained with love by the Astronomer team. To report a bug or suggest a change, reach out to our support.
+## ⚙️ Getting Started
+
+### Prerequisites
+
+* Docker & Docker Compose
+* Astro CLI
+* A GCP Account (Service Account JSON key required)
+
+### Setup
+
+1. Clone the repository:
+```bash
+git clone [https://github.com/tunbq21/airflow_astro_dev.git](https://github.com/tunbq21/airflow_astro_dev.git)
+cd airflow_astro_dev
+
+```
+
+
+2. Set up environment variables in `.env`:
+```bash
+GCP_CONN_ID='google_cloud_default'
+POSTGRES_CONN_ID='postgres_default'
+
+```
+
+
+3. Start the pipeline:
+```bash
+astro dev start
+
+```
+
+
+4. Access Airflow UI at `http://localhost:8080`.
+
+## 📊 Analytics Output
+
+The pipeline generates a `stock_recommendations` table in PostgreSQL with the following schema:
+
+* `ticker`: Stock symbol (e.g., FPT, VNM)
+* `volatility`: Standard deviation of returns
+* `total_return`: Percentage growth over period
+* `signal`: Recommended action (Buy/Sell/Hold)
+
+---
+
+Developed by **Bui Quang Tuan** - *Data Engineer*
+
+2. **Setup:** Nếu project của bạn có thêm các bước cài đặt đặc thù (như config Service Account trên GCP), hãy bổ sung vào mục **Setup**.
+3. **Link trong CV:** Sau khi tạo file README này, cái "GitHub Link" trong CV của bạn sẽ trở nên cực kỳ giá trị vì nó giải thích chi tiết những gì bạn đã làm.
+
+Bạn có muốn mình tối ưu thêm đoạn nào trong nội dung này không?
+
+```
