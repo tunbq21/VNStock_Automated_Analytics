@@ -11,16 +11,25 @@ The pipeline is designed to handle daily/yearly batch processing with a hybrid c
 1.  **Orchestration**: Managed by **Apache Airflow** (running via **Astro CLI**).
 2.  **Data Ingestion**: Fetches stock data from **Vnstock API** for 29 tickers.
 3.  **Storage (Data Lake)**: Raw and processed data stored in **Google Cloud Storage (GCS)**.
-4.  **Compute (Big Data)**: Triggers distributed **PySpark** jobs on **Google Cloud Dataproc** for heavy transformations.
-5.  **Analytics Layer**: Aggregates financial KPIs (Volatility, Total Return) and stores them in **PostgreSQL**.
-6.  **Containerization**: Entire environment isolated using **Docker**.
+4.  **Compute (Big Data)**: Triggers distributed **PySpark** jobs on **Google Cloud Dataproc**.
+5.  **Analytics Layer**: Aggregates financial KPIs and stores them in **PostgreSQL**.
 
-## 🚀 Key Features
+## ☁️ GCP Infrastructure & Spark execution
 
-- **Automated ETL**: Daily ingestion schedules with Airflow DAGs.
-- **Stock Recommendation Engine**: Built-in logic using Pandas/PySpark to calculate investment signals (Strong Buy, Hold, etc.).
-- **Data Idempotency**: Implemented `UPSERT` logic in PostgreSQL to prevent duplicate records during re-runs.
-- **Cloud Integration**: Uses IAM Service Accounts for secure local-to-cloud connectivity.
+To enable large-scale data processing, the pipeline integrates local Airflow with Google Cloud services:
+
+* **GCS as a Landing Zone**: Used for storing raw JSON data (Bronze) and Spark job scripts (`.py`).
+* **Dynamic Dataproc Clusters**: The Airflow DAG utilizes `DataprocCreateClusterOperator` to spin up managed Spark clusters on-demand, optimizing costs.
+* **Remote Job Submission**: Spark jobs are submitted via `DataprocSubmitJobOperator` with custom initialization actions to install dependencies like `vnstock`.
+* **IAM Security**: Scoped with `Dataproc Worker` and `Storage Object Admin` roles for secure connectivity.
+
+## 📊 Data Output Preview
+
+The pipeline doesn't just move data; it generates actionable insights. Below is a snapshot of the processed stock analytics stored in PostgreSQL, showing calculated KPIs and investment signals:
+
+![Stock Analytics Output](https://github.com/tunbq21/airflow_astro_dev/blob/main/image_4c40fb.png?raw=true)
+
+> **Note**: The image above displays automated signals (BUY/SELL/HOLD) based on multi-factor financial analysis including Volatility and Total Return.
 
 ## 🛠 Tech Stack
 
@@ -31,84 +40,16 @@ The pipeline is designed to handle daily/yearly batch processing with a hybrid c
 | **Cloud (GCP)** | GCS, Dataproc, IAM |
 | **Database** | PostgreSQL |
 | **Infrastructure** | Docker |
-| **Libraries** | Pandas, Vnstock API, Psycopg2, PySpark |
 
-## 📂 Project Structure
+## ⚙️ Setup Instructions
 
-```text
-├── dags/                   # Airflow DAG definitions
-├── include/                # Helper scripts and SQL queries
-├── plugins/                # Custom Airflow operators/plugins
-├── scripts/                # PySpark transformation scripts
-├── docker-compose.yaml     # Container orchestration
-└── Dockerfile              # Custom Airflow image with dependencies
-
-```
-
-## ⚙️ Getting Started
-
-### Prerequisites
-
-* Docker & Docker Compose
-* Astro CLI
-* A GCP Account (Service Account JSON key required)
-
-### Setup
-
-1. Clone the repository:
-```bash
-git clone [https://github.com/tunbq21/airflow_astro_dev.git](https://github.com/tunbq21/airflow_astro_dev.git)
-cd airflow_astro_dev
-
-```
-
-
-2. Set up environment variables in `.env`:
-```bash
-GCP_CONN_ID='google_cloud_default'
-POSTGRES_CONN_ID='postgres_default'
-
-```
-
-
-3. Start the pipeline:
-```bash
-astro dev start
-
-```
-
-
-4. Access Airflow UI at `http://localhost:8080`.
-
-## 📊 Analytics Output
-
-The pipeline generates a `stock_recommendations` table in PostgreSQL with the following schema:
-
-* `ticker`: Stock symbol (e.g., FPT, VNM)
-* `volatility`: Standard deviation of returns
-* `total_return`: Percentage growth over period
-* `signal`: Recommended action (Buy/Sell/Hold)
+1.  **GCS Buckets**: Create buckets for landing data and hosting Spark scripts.
+2.  **Airflow Connection**: Create a connection named `google_cloud_default` in Airflow UI.
+3.  **Service Account**: Upload your GCP Service Account JSON key with Dataproc and Storage permissions.
+4.  **Start Pipeline**:
+    ```bash
+    astro dev start
+    ```
 
 ---
-## ⚙️ GCP Infrastructure Setup
-
-To run the Spark jobs on Google Cloud, follow these configuration steps:
-
-1. **GCS Buckets**: Create two buckets:
-   - `gs://your-landing-zone`: For raw data and processed Parquet files.
-   - `gs://your-spark-scripts`: To host the PySpark transformation logic.
-
-2. **Dataproc Configuration**: 
-   - The pipeline is pre-configured to use `n1-standard-2` machine types for cost-efficiency.
-   - Ensure the **Dataproc API** and **Compute Engine API** are enabled in your GCP Console.
-
-3. **Airflow Connection**:
-   - In Airflow UI, go to **Admin > Connections**.
-   - Create a new connection `google_cloud_default`.
-   - Upload your **Service Account JSON Key** with the following permissions:
-     - `Dataproc Editor`
-     - `Storage Object Admin`
-     - `Service Account User`
-
-Developed by **Bui Quang Tuan** -**tbuiquang103@gmail.com**
-
+Developed by **Bui Quang Tuan** - *Data Engineer*
